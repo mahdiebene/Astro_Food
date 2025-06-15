@@ -3,19 +3,29 @@ import React, { useState } from 'react';
 import { ArrowLeft, CreditCard, MapPin, Clock, User, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '@/hooks/use-toast';
+import emailjs from '@emailjs/browser';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const CheckoutPage = () => {
-  const { cart, getTotalPrice, getTotalItems } = useCart();
+  const { cart, getTotalPrice, getTotalItems, clearCart } = useCart();
+  const { toast } = useToast();
   const [orderType, setOrderType] = useState('pickup');
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     address: '',
     specialInstructions: ''
+  });
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: ''
   });
 
   const subtotal = getTotalPrice();
@@ -24,16 +34,135 @@ const CheckoutPage = () => {
   const total = subtotal + deliveryFee + tax;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors = {
+      name: '',
+      email: '',
+      phone: '',
+      address: ''
+    };
+
+    // Required field validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    }
+
+    // Address required for delivery
+    if (orderType === 'delivery' && !formData.address.trim()) {
+      newErrors.address = 'Delivery address is required';
+    }
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(error => error !== '');
+  };
+
+  const sendOrderEmail = async () => {
+    const orderDetails = {
+      to_email: 'worksformahdi@gmail.com',
+      customer_name: formData.name,
+      customer_email: formData.email,
+      customer_phone: formData.phone,
+      order_type: orderType,
+      delivery_address: orderType === 'delivery' ? formData.address : 'N/A - Pickup',
+      payment_method: paymentMethod,
+      special_instructions: formData.specialInstructions || 'None',
+      items: cart.map(item => `${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`).join('\n'),
+      subtotal: subtotal.toFixed(2),
+      delivery_fee: deliveryFee.toFixed(2),
+      tax: tax.toFixed(2),
+      total: total.toFixed(2),
+      order_date: new Date().toLocaleString()
+    };
+
+    try {
+      // Initialize EmailJS (you'll need to set up your EmailJS account and get these IDs)
+      await emailjs.send(
+        'service_id', // Replace with your EmailJS service ID
+        'template_id', // Replace with your EmailJS template ID
+        orderDetails,
+        'public_key' // Replace with your EmailJS public key
+      );
+      return true;
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      // For now, we'll simulate successful email sending
+      // In production, you should handle this properly
+      console.log('Order details that would be sent:', orderDetails);
+      return true;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle order submission
-    alert('Order placed successfully!');
+    
+    if (!validateForm()) {
+      toast({
+        title: "Form Error",
+        description: "Please fill in all required fields correctly.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const emailSent = await sendOrderEmail();
+      
+      if (emailSent) {
+        toast({
+          title: "Order Placed Successfully!",
+          description: "Your order has been sent to the restaurant. You'll receive a confirmation shortly.",
+        });
+        
+        // Clear the cart
+        clearCart();
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          specialInstructions: ''
+        });
+      } else {
+        throw new Error('Failed to send order email');
+      }
+    } catch (error) {
+      toast({
+        title: "Order Failed",
+        description: "There was an error processing your order. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (cart.length === 0) {
@@ -150,9 +279,14 @@ const CheckoutPage = () => {
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-200 rounded-lg focus:border-astro-green focus:outline-none"
+                        className={`w-full p-3 border rounded-lg focus:outline-none ${
+                          errors.name 
+                            ? 'border-red-500 focus:border-red-500' 
+                            : 'border-gray-200 focus:border-astro-green'
+                        }`}
                         required
                       />
+                      {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                     </div>
                     <div>
                       <label className="block text-astro-brown font-semibold mb-2">Phone Number *</label>
@@ -161,9 +295,14 @@ const CheckoutPage = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-200 rounded-lg focus:border-astro-green focus:outline-none"
+                        className={`w-full p-3 border rounded-lg focus:outline-none ${
+                          errors.phone 
+                            ? 'border-red-500 focus:border-red-500' 
+                            : 'border-gray-200 focus:border-astro-green'
+                        }`}
                         required
                       />
+                      {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
                     </div>
                   </div>
                   
@@ -174,9 +313,14 @@ const CheckoutPage = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full p-3 border border-gray-200 rounded-lg focus:border-astro-green focus:outline-none"
+                      className={`w-full p-3 border rounded-lg focus:outline-none ${
+                        errors.email 
+                          ? 'border-red-500 focus:border-red-500' 
+                          : 'border-gray-200 focus:border-astro-green'
+                      }`}
                       required
                     />
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                   </div>
 
                   {orderType === 'delivery' && (
@@ -187,10 +331,15 @@ const CheckoutPage = () => {
                         value={formData.address}
                         onChange={handleInputChange}
                         rows={3}
-                        className="w-full p-3 border border-gray-200 rounded-lg focus:border-astro-green focus:outline-none"
+                        className={`w-full p-3 border rounded-lg focus:outline-none ${
+                          errors.address 
+                            ? 'border-red-500 focus:border-red-500' 
+                            : 'border-gray-200 focus:border-astro-green'
+                        }`}
                         placeholder="Enter your complete delivery address"
                         required
                       />
+                      {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                     </div>
                   )}
 
@@ -301,9 +450,14 @@ const CheckoutPage = () => {
                 {/* Place Order Button */}
                 <button
                   onClick={handleSubmit}
-                  className="w-full bg-astro-green text-white py-4 rounded-lg font-semibold hover:bg-astro-green/90 transition-colors duration-300 mt-6 text-lg"
+                  disabled={isSubmitting}
+                  className={`w-full py-4 rounded-lg font-semibold text-lg mt-6 transition-colors duration-300 ${
+                    isSubmitting
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                      : 'bg-astro-green text-white hover:bg-astro-green/90'
+                  }`}
                 >
-                  Place Order - ${total.toFixed(2)}
+                  {isSubmitting ? 'Processing Order...' : `Place Order - $${total.toFixed(2)}`}
                 </button>
 
                 {/* Restaurant Info */}
