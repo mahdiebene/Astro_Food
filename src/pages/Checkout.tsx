@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowLeft, CreditCard, MapPin, Clock, User, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -99,12 +100,11 @@ const CheckoutPage = () => {
     };
 
     try {
-      // Replace these with your actual EmailJS credentials
       await emailjs.send(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        'service_eq54hct', // Your EmailJS service ID
+        'template_ey6ifsp', // Your EmailJS template ID
         orderDetails,
-        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+        'DYeqKUsgr8yKhBy6U' // Your EmailJS public key
       );
       return true;
     } catch (error) {
