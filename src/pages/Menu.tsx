@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Plus, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -71,7 +70,7 @@ const MenuPage = () => {
           name: "Loaded Cheese Fries",
           description: "Golden fries topped with melted cheese and bacon bits",
           price: "$8.99",
-          image: "https://images.unsplash.com/photo-1541592106381-b31e4d637fad?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+          image: "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
         },
         {
           id: 9,
@@ -112,7 +111,7 @@ const MenuPage = () => {
           name: "Iced Coffee",
           description: "Cold brew coffee with your choice of milk",
           price: "$4.49",
-          image: "https://images.unsplash.com/photo-1461023058943-07fcf741c0cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+          image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
         },
         {
           id: 14,
@@ -130,7 +129,7 @@ const MenuPage = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-20 pb-12 bg-gradient-to-r from-astro-brown to-astro-orange">
+      <section className="pt-24 pb-12 bg-gradient-to-r from-astro-brown to-astro-orange">
         <div className="container mx-auto px-4">
           <div className="text-center text-white animate-fade-in">
             <Link to="/" className="inline-flex items-center gap-2 text-astro-cream hover:text-white mb-6 transition-colors">

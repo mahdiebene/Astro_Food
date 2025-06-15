@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, Plus, Minus, ShoppingCart, MapPin, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -79,7 +78,7 @@ const OrderPage = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-20 pb-12 bg-gradient-to-r from-astro-green to-astro-orange">
+      <section className="pt-24 pb-12 bg-gradient-to-r from-astro-green to-astro-orange">
         <div className="container mx-auto px-4">
           <div className="text-center text-white animate-fade-in">
             <Link to="/" className="inline-flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors">
@@ -247,9 +246,9 @@ const OrderPage = () => {
                         <span className="text-2xl font-bold text-astro-orange">${getTotalPrice()}</span>
                       </div>
                       
-                      <button className="w-full bg-astro-brown text-white py-3 rounded-lg font-semibold hover:bg-astro-brown/90 transition-colors duration-300">
+                      <Link to="/checkout" className="w-full bg-astro-brown text-white py-3 rounded-lg font-semibold hover:bg-astro-brown/90 transition-colors duration-300 block text-center">
                         Proceed to Checkout
-                      </button>
+                      </Link>
                     </div>
                   </>
                 )}
