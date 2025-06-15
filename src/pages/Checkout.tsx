@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, CreditCard, MapPin, Clock, User, Phone, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -378,6 +377,24 @@ const CheckoutPage = () => {
                       placeholder="Any special requests, dietary restrictions, or cooking preferences?"
                     />
                   </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full py-4 rounded-lg font-semibold text-lg mt-6 transition-all duration-300 transform ${
+                      isSubmitting
+                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                        : 'bg-astro-green text-white hover:bg-astro-green/90 hover:scale-105 shadow-lg hover:shadow-xl'
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Processing Order...
+                      </div>
+                    ) : (
+                      `Place Order - $${total.toFixed(2)}`
+                    )}
+                  </button>
                 </form>
               </div>
 
@@ -480,26 +497,6 @@ const CheckoutPage = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Place Order Button */}
-                <button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className={`w-full py-4 rounded-lg font-semibold text-lg mt-6 transition-all duration-300 transform ${
-                    isSubmitting
-                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                      : 'bg-astro-green text-white hover:bg-astro-green/90 hover:scale-105 shadow-lg hover:shadow-xl'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Processing Order...
-                    </div>
-                  ) : (
-                    `Place Order - $${total.toFixed(2)}`
-                  )}
-                </button>
 
                 {/* Restaurant Info */}
                 <div className="mt-6 p-4 bg-astro-cream/50 rounded-lg">
