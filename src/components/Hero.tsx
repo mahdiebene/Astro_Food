@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -18,18 +19,12 @@ const Hero = () => {
           Locally-sourced ingredients. Grilled to perfection.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a 
-            href="#menu" 
-            className="btn-primary inline-block"
-          >
+          <Link to="/menu" className="btn-primary inline-block">
             View Menu
-          </a>
-          <a 
-            href="#order" 
-            className="btn-secondary inline-block"
-          >
+          </Link>
+          <Link to="/order" className="btn-secondary inline-block">
             Order Now
-          </a>
+          </Link>
         </div>
       </div>
       

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Menu = () => {
   const burgers = [
@@ -83,12 +84,9 @@ const Menu = () => {
         </div>
 
         <div className="text-center mt-12">
-          <a 
-            href="#order" 
-            className="btn-primary"
-          >
+          <Link to="/menu" className="btn-primary">
             View Full Menu
-          </a>
+          </Link>
         </div>
       </div>
     </section>
