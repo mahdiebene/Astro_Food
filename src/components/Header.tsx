@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { getTotalItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,15 +71,35 @@ const Header = () => {
                 </Link>
               )
             ))}
+            
+            {/* Cart Icon for Desktop */}
+            <Link to="/checkout" className="relative text-astro-brown hover:text-astro-orange transition-colors duration-300">
+              <ShoppingCart size={24} />
+              {getTotalItems() > 0 && (
+                <span className="absolute -top-2 -right-2 bg-astro-orange text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {getTotalItems()}
+                </span>
+              )}
+            </Link>
           </nav>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-astro-brown p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Menu Button & Cart */}
+          <div className="md:hidden flex items-center gap-3">
+            <Link to="/checkout" className="relative text-astro-brown">
+              <ShoppingCart size={24} />
+              {getTotalItems() > 0 && (
+                <span className="absolute -top-2 -right-2 bg-astro-orange text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {getTotalItems()}
+                </span>
+              )}
+            </Link>
+            <button
+              className="text-astro-brown p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}

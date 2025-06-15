@@ -2,10 +2,12 @@
 import React, { useState } from 'react';
 import { ArrowLeft, CreditCard, MapPin, Clock, User, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const CheckoutPage = () => {
+  const { cart, getTotalPrice, getTotalItems } = useCart();
   const [orderType, setOrderType] = useState('pickup');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [formData, setFormData] = useState({
@@ -16,25 +18,7 @@ const CheckoutPage = () => {
     specialInstructions: ''
   });
 
-  // Mock cart data - synced with menu page data structure
-  const cartItems = [
-    {
-      id: 1,
-      name: "The Smoky Trail",
-      price: 14.99,
-      quantity: 2,
-      image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-      id: 2,
-      name: "Farm Fresh Classic",
-      price: 12.99,
-      quantity: 1,
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-    }
-  ];
-
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = getTotalPrice();
   const deliveryFee = orderType === 'delivery' ? 3.99 : 0;
   const tax = (subtotal + deliveryFee) * 0.08;
   const total = subtotal + deliveryFee + tax;
@@ -51,6 +35,34 @@ const CheckoutPage = () => {
     // Handle order submission
     alert('Order placed successfully!');
   };
+
+  if (cart.length === 0) {
+    return (
+      <div className="min-h-screen bg-astro-cream">
+        <Header />
+        <section className="pt-24 pb-12 bg-gradient-to-r from-astro-orange to-astro-brown">
+          <div className="container mx-auto px-4">
+            <div className="text-center text-white animate-fade-in">
+              <Link to="/order" className="inline-flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors">
+                <ArrowLeft size={20} />
+                Back to Order
+              </Link>
+              <h1 className="text-4xl md:text-6xl font-bold mb-4 font-playfair">
+                Your Cart is Empty
+              </h1>
+              <p className="text-xl max-w-2xl mx-auto mb-8">
+                Add some delicious items to your cart before checking out
+              </p>
+              <Link to="/menu" className="btn-primary">
+                Browse Menu
+              </Link>
+            </div>
+          </div>
+        </section>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-astro-cream">
@@ -239,7 +251,7 @@ const CheckoutPage = () => {
 
                 {/* Items */}
                 <div className="space-y-4 mb-6">
-                  {cartItems.map((item) => (
+                  {cart.map((item) => (
                     <div key={item.id} className="flex items-center gap-3 p-3 border border-gray-100 rounded-lg">
                       <img
                         src={item.image}

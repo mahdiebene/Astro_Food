@@ -1,35 +1,39 @@
+
 import React from 'react';
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const Menu = () => {
+  const { addToCart } = useCart();
+
   const burgers = [
     {
       id: 1,
       name: "The Smoky Trail",
       description: "Double beef, house-smoked cheddar, BBQ glaze, crispy onions",
-      price: "$14.99",
+      price: 14.99,
       image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
     },
     {
       id: 2,
       name: "Farm Fresh Classic",
       description: "Grass-fed beef, organic lettuce, vine tomatoes, special sauce",
-      price: "$12.99",
+      price: 12.99,
       image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
     },
     {
       id: 3,
       name: "The Green Ranger",
       description: "Plant-based patty, avocado, sprouts, tahini dressing",
-      price: "$13.99",
+      price: 13.99,
       image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
     },
     {
       id: 4,
       name: "Bacon Blaze",
       description: "Angus beef, hickory bacon, pepper jack, jalapeño aioli",
-      price: "$15.99",
+      price: 15.99,
       image: "https://images.unsplash.com/photo-1550317138-10000687a72b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
     }
   ];
@@ -72,9 +76,12 @@ const Menu = () => {
                 
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-bold text-astro-orange">
-                    {burger.price}
+                    ${burger.price}
                   </span>
-                  <button className="bg-astro-green text-white p-2 rounded-full hover:bg-astro-green/90 transition-colors duration-300 hover:scale-110">
+                  <button 
+                    onClick={() => addToCart(burger)}
+                    className="bg-astro-green text-white p-2 rounded-full hover:bg-astro-green/90 transition-colors duration-300 hover:scale-110"
+                  >
                     <Plus size={20} />
                   </button>
                 </div>
