@@ -16,7 +16,7 @@ const CheckoutPage = () => {
     specialInstructions: ''
   });
 
-  // Mock cart data - in a real app, this would come from context/state management
+  // Mock cart data - synced with menu page data structure
   const cartItems = [
     {
       id: 1,
@@ -39,14 +39,14 @@ const CheckoutPage = () => {
   const tax = (subtotal + deliveryFee) * 0.08;
   const total = subtotal + deliveryFee + tax;
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle order submission
     alert('Order placed successfully!');
@@ -174,7 +174,7 @@ const CheckoutPage = () => {
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
-                        rows="3"
+                        rows={3}
                         className="w-full p-3 border border-gray-200 rounded-lg focus:border-astro-green focus:outline-none"
                         placeholder="Enter your complete delivery address"
                         required
@@ -188,7 +188,7 @@ const CheckoutPage = () => {
                       name="specialInstructions"
                       value={formData.specialInstructions}
                       onChange={handleInputChange}
-                      rows="3"
+                      rows={3}
                       className="w-full p-3 border border-gray-200 rounded-lg focus:border-astro-green focus:outline-none"
                       placeholder="Any special requests or dietary restrictions?"
                     />
