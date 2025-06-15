@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Plus } from 'lucide-react';
 
@@ -30,7 +29,7 @@ const Menu = () => {
       name: "Bacon Blaze",
       description: "Angus beef, hickory bacon, pepper jack, jalapeño aioli",
       price: "$15.99",
-      image: "https://images.unsplash.com/photo-1553979459-d2229ba7433a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+      image: "https://images.unsplash.com/photo-1550317138-10000687a72b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
     }
   ];
 
