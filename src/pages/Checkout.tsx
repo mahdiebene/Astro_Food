@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, CreditCard, MapPin, Clock, User, Phone, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -100,20 +99,17 @@ const CheckoutPage = () => {
     };
 
     try {
-      // Initialize EmailJS (you'll need to set up your EmailJS account and get these IDs)
+      // Replace these with your actual EmailJS credentials
       await emailjs.send(
-        'service_id', // Replace with your EmailJS service ID
-        'template_id', // Replace with your EmailJS template ID
+        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
         orderDetails,
-        'public_key' // Replace with your EmailJS public key
+        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
       );
       return true;
     } catch (error) {
       console.error('Email sending failed:', error);
-      // For now, we'll simulate successful email sending
-      // In production, you should handle this properly
-      console.log('Order details that would be sent:', orderDetails);
-      return true;
+      return false;
     }
   };
 
